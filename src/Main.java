@@ -24,23 +24,28 @@ public class Main {
         return false;
     }
     public static void compile(String filename) throws Exception{
-        MxLexer lexer;
-        if (filename.equals("ONLINE_JUDGE")) lexer = new MxLexer(CharStreams.fromStream(System.in));
-        else {
-            FileInputStream input = new FileInputStream(filename);
-            lexer = new MxLexer(CharStreams.fromStream(input));
-        }
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(new mxErrorListener());
-        MxParser parser = new MxParser(new CommonTokenStream(lexer));
-        parser.removeErrorListeners();
-        parser.addErrorListener(new mxErrorListener());
+        try {
+            MxLexer lexer;
+            if (filename.equals("ONLINE_JUDGE")) lexer = new MxLexer(CharStreams.fromStream(System.in));
+            else {
+                FileInputStream input = new FileInputStream(filename);
+                lexer = new MxLexer(CharStreams.fromStream(input));
+            }
+            lexer.removeErrorListeners();
+            lexer.addErrorListener(new mxErrorListener());
+            MxParser parser = new MxParser(new CommonTokenStream(lexer));
+            parser.removeErrorListeners();
+            parser.addErrorListener(new mxErrorListener());
 
-        ASTBuilder astBuilder = new ASTBuilder();
-        programNode rt = (programNode) astBuilder.visitProgram(parser.program());
-        GlobalScope gS = new GlobalScopeInit();
-        new symbolCollector(gS).visit(rt);
-        new semanticChecker(gS).visit(rt);
+            ASTBuilder astBuilder = new ASTBuilder();
+            programNode rt = (programNode) astBuilder.visitProgram(parser.program());
+            GlobalScope gS = new GlobalScopeInit();
+            new symbolCollector(gS).visit(rt);
+            new semanticChecker(gS).visit(rt);
+        }
+        catch (Exception exception) {
+            throw new RuntimeException();
+        }
         //System.err.println("semantic ok");
     }
     public static void testCompile() throws Exception{
