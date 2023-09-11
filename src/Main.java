@@ -24,9 +24,12 @@ public class Main {
         return false;
     }
     public static void compile(String filename) throws Exception{
-        FileInputStream input = new FileInputStream(filename);
-
-        MxLexer lexer = new MxLexer(CharStreams.fromStream(input));
+        MxLexer lexer;
+        if (filename.equals("ONLINE_JUDGE")) lexer = new MxLexer(CharStreams.fromStream(System.in));
+        else {
+            FileInputStream input = new FileInputStream(filename);
+            lexer = new MxLexer(CharStreams.fromStream(input));
+        }
         lexer.removeErrorListeners();
         lexer.addErrorListener(new mxErrorListener());
         MxParser parser = new MxParser(new CommonTokenStream(lexer));
@@ -60,7 +63,7 @@ public class Main {
         }
     }
     public static void main(String[] args) throws Exception {
-        testCompile();
-        //compile("testcases/sema/ternary-package/ternary-expression-5.mx");
+        //testCompile();
+        compile("ONLINE_JUDGE");
     }
 }
